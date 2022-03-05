@@ -1,0 +1,42 @@
+version: '3'
+
+services:
+  db:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    env_file:
+      - ./DB/.env
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - todo
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      - PORT=3000
+    env_file:
+      - ./DB/.env
+    networks:
+      - todo
+    depends_on:
+      - db
+  frontend:
+    build: 
+      context: ./frontend
+    ports:
+      - '80:80'
+    volumes:
+      - ./nginx/logs:/var/log/nginx
+    networks:
+      - todo
+    depends_on:
+      - backend
+
+networks:
+  todo:
+    driver: bridge
+
+volumes:
+  mysql-data:

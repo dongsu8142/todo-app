@@ -1,0 +1,5 @@
+DB/.env
+**/node_modules
+.vscode
+nginx/logs
+**/dist
